@@ -38,8 +38,8 @@ class HomeCubit extends Cubit<HomeState> {
 
     final url =
         queryParams.isNotEmpty
-            ? '${ApiConst.getFamilies}?$queryParams'
-            : ApiConst.getFamilies;
+            ? '${ApiConst.families}?$queryParams'
+            : ApiConst.families;
 
     VPSDio.get(path: url)
         .then((value) {
@@ -52,6 +52,24 @@ class HomeCubit extends Cubit<HomeState> {
         })
         .catchError((e) {
           emit(GetFamiliesFaild());
+        });
+  }
+
+  Future<void> addFamily(Map<String, dynamic> data) async {
+    emit(AddFamelyLoading());
+    VPSDio.post(path: ApiConst.families, data: data)
+        .then((value) {
+          print(value.data);
+          if (value.statusCode == 201) {
+            emit(AddFamelySuccess());
+          } else {
+            print(value.data);
+            emit(AddFamelyError(message: value.data['message'] ?? 'Error'));
+          }
+        })
+        .catchError((e) {
+          print(e);
+          emit(AddFamelyFaild());
         });
   }
 

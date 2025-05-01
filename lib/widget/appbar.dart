@@ -8,6 +8,7 @@ class CustomAppBarFirst extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: primaryColor,
       surfaceTintColor: Colors.transparent,
       title: GestureDetector(
         onTap: () {},

@@ -1,4 +1,5 @@
 import 'package:charity/Screen/profile/profile.dart';
+import 'package:charity/home/add_famely.dart';
 import 'package:charity/home/cubit/home_cubit.dart';
 import 'package:charity/home/home.dart';
 import 'package:charity/widget/nav_bar.dart';
@@ -36,7 +37,7 @@ Widget getBody(context) {
   } else if (selectBottomindex == 2) {
     return Profile();
   } else if (selectBottomindex == 1) {
-    return SizedBox();
+    return AddFamilyPage();
   } else {
     return Center(child: Text('Home'));
   }

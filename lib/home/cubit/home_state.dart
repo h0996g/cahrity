@@ -17,3 +17,14 @@ final class GetFamiliesError extends HomeState {
 }
 
 final class GetFamiliesFaild extends HomeState {}
+
+final class AddFamelyLoading extends HomeState {}
+
+final class AddFamelySuccess extends HomeState {}
+
+final class AddFamelyError extends HomeState {
+  final String message;
+  AddFamelyError({required this.message});
+}
+
+final class AddFamelyFaild extends HomeState {}
