@@ -1,6 +1,8 @@
+import 'package:charity/home/cubit/home_cubit.dart';
 import 'package:charity/home/family.dart';
 import 'package:charity/model/family/family_m.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -9,7 +11,21 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Families")),
-      body: FamilyCardList(families: myLoadedFamilyList),
+      body: BlocConsumer<HomeCubit, HomeState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          if (state is GetFamiliesLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is GetFamiliesError) {
+            return Center(child: Text(state.message));
+          } else if (state is GetFamiliesFaild) {
+            return const Center(child: Text("Failed to load families"));
+          }
+          return FamilyCardList(
+            families: HomeCubit.get(context).familyModel?.families ?? [],
+          );
+        },
+      ),
     );
   }
 }
