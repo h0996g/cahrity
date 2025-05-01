@@ -1,7 +1,7 @@
 import 'package:charity/const/const.dart';
 import 'package:charity/helper/cach.dart';
 import 'package:charity/route.dart';
-import 'package:charity/widget/no_connection%20copy.dart';
+import 'package:charity/widget/no_connection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:flutter/material.dart';

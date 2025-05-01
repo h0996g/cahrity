@@ -1,89 +1,208 @@
 import 'package:charity/home/cubit/home_cubit.dart';
 import 'package:charity/home/family.dart';
-import 'package:charity/model/family/family_m.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final TextEditingController _firstName = TextEditingController();
+  final TextEditingController _lastName = TextEditingController();
+  final TextEditingController _state = TextEditingController();
+
+  String? _selectedSex;
+  String? _selectedFamilySituation;
+  bool _showFilters = false; // 👈 NEW STATE
+
+  final List<String> sexes = ["Male", "Female"];
+  final List<String> familySituations = [
+    "Single",
+    "Married",
+    "Divorced",
+    "Widowed",
+  ];
+
+  void _applyFilters() {
+    final filters = <String, dynamic>{
+      'firstName': _firstName.text.trim(),
+      'lastName': _lastName.text.trim(),
+      'state': _state.text.trim(),
+      'sex': _selectedSex,
+      'familySituation': _selectedFamilySituation,
+    };
+    context.read<HomeCubit>().getFamilies(filters: filters);
+  }
+
+  void _resetFilters() {
+    _firstName.clear();
+    _lastName.clear();
+    _state.clear();
+    setState(() {
+      _selectedSex = null;
+      _selectedFamilySituation = null;
+    });
+    context.read<HomeCubit>().getFamilies();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomeCubit>().getFamilies();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Families")),
-      body: BlocConsumer<HomeCubit, HomeState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          if (state is GetFamiliesLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is GetFamiliesError) {
-            return Center(child: Text(state.message));
-          } else if (state is GetFamiliesFaild) {
-            return const Center(child: Text("Failed to load families"));
-          }
-          return FamilyCardList(
-            families: HomeCubit.get(context).familyModel?.families ?? [],
-          );
-        },
+      appBar: AppBar(
+        title: const Text("Families"),
+        actions: [
+          IconButton(
+            icon: Icon(_showFilters ? Icons.close : Icons.filter_list),
+            tooltip: _showFilters ? 'Hide Filters' : 'Show Filters',
+            onPressed: () {
+              setState(() => _showFilters = !_showFilters);
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          AnimatedCrossFade(
+            duration: const Duration(milliseconds: 300),
+            crossFadeState:
+                _showFilters
+                    ? CrossFadeState.showFirst
+                    : CrossFadeState.showSecond,
+            firstChild: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: [
+                      _textField("First Name", _firstName),
+                      _textField("Last Name", _lastName),
+                      _textField("State", _state),
+                      _dropdownField("Sex", sexes, _selectedSex, (value) {
+                        setState(() => _selectedSex = value);
+                      }),
+                      _dropdownField(
+                        "Family Situation",
+                        familySituations,
+                        _selectedFamilySituation,
+                        (value) {
+                          setState(() => _selectedFamilySituation = value);
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: _applyFilters,
+                        icon: const Icon(Icons.search),
+                        label: const Text("Apply Filters"),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                          backgroundColor: Colors.indigo,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      OutlinedButton.icon(
+                        onPressed: _resetFilters,
+                        icon: const Icon(Icons.refresh),
+                        label: const Text("Reset"),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                          side: const BorderSide(color: Colors.indigo),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            secondChild: const SizedBox.shrink(),
+          ),
+          const Divider(thickness: 1.2),
+          Expanded(
+            child: BlocConsumer<HomeCubit, HomeState>(
+              listener: (context, state) {},
+              builder: (context, state) {
+                if (state is GetFamiliesLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is GetFamiliesError) {
+                  return Center(child: Text(state.message));
+                } else if (state is GetFamiliesFaild) {
+                  return const Center(child: Text("Failed to load families"));
+                }
+                return FamilyCardList(
+                  families: HomeCubit.get(context).familyModel?.families ?? [],
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _textField(String label, TextEditingController controller) {
+    return SizedBox(
+      width: 160,
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          isDense: true,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      ),
+    );
+  }
+
+  Widget _dropdownField(
+    String label,
+    List<String> items,
+    String? selectedValue,
+    Function(String?) onChanged,
+  ) {
+    return SizedBox(
+      width: 160,
+      child: DropdownButtonFormField<String>(
+        value: selectedValue,
+        items:
+            items
+                .map((item) => DropdownMenuItem(value: item, child: Text(item)))
+                .toList(),
+        onChanged: onChanged,
+        decoration: InputDecoration(
+          labelText: label,
+          isDense: true,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        ),
       ),
     );
   }
 }
-
-final List<FamilyModel> myLoadedFamilyList = [
-  FamilyModel(
-    numberOfChildren: 1,
-    id: "681232dbc84c7421048b95a3",
-    firstName: "Ahmed",
-    lastName: "Benali",
-    birthDate: DateTime.parse("1985-07-15"),
-    sex: "Male",
-    phone: "+213661234567",
-    address: "123 Rue de la Liberté, Alger",
-    state: "Alger",
-    idCardNumber: "123456789012",
-    familySituation: "Married",
-    familySize: 5,
-    children: [Child(age: 10, shoeSize: 30, id: "681232dbc84c7421048b95a4")],
-    educatedChildren: 2,
-    disabledChildren: 1,
-    familyIncome: 35000,
-    workSituation: "Unemployed",
-    residenceType: "Rented",
-    helpNeeded: "Food, Clothing",
-    lastHelpDate: DateTime.parse("2024-12-01"),
-    numberOfReceivedHelp: 2,
-    notes: "Requires additional medical assistance",
-    createdAt: DateTime.now(),
-    updatedAt: DateTime.now(),
-  ),
-  FamilyModel(
-    numberOfChildren: 2,
-    id: "681232dbc84c7421048b95b9",
-    firstName: "Fatima",
-    lastName: "Zohra",
-    birthDate: DateTime.parse("1990-03-10"),
-    sex: "Female",
-    phone: "+213665432198",
-    address: "45 Avenue des Martyrs, Oran",
-    state: "Oran",
-    idCardNumber: "987654321098",
-    familySituation: "Widowed",
-    familySize: 4,
-    children: [
-      Child(age: 12, shoeSize: 32, id: "child1"),
-      Child(age: 8, shoeSize: 28, id: "child2"),
-    ],
-    educatedChildren: 1,
-    disabledChildren: 0,
-    familyIncome: 22000,
-    workSituation: "Part-time",
-    residenceType: "Owned",
-    helpNeeded: "School Supplies",
-    lastHelpDate: DateTime.parse("2024-10-20"),
-    numberOfReceivedHelp: 1,
-    notes: "Needs assistance for school supplies for both kids",
-    createdAt: DateTime.now(),
-    updatedAt: DateTime.now(),
-  ),
-];

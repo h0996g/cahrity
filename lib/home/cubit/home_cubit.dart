@@ -19,15 +19,35 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   FamilyResponse? familyModel;
-  Future<void> getFamilies() async {
+  Future<void> getFamilies({Map<String, dynamic>? filters}) async {
     emit(GetFamiliesLoading());
-    VPSDio.get(path: ApiConst.getFamilies)
+
+    final queryParams =
+        filters != null
+            ? filters.entries
+                .where(
+                  (entry) =>
+                      entry.value != null && entry.value.toString().isNotEmpty,
+                )
+                .map(
+                  (entry) =>
+                      '${Uri.encodeComponent(entry.key)}=${Uri.encodeComponent(entry.value.toString())}',
+                )
+                .join('&')
+            : '';
+
+    final url =
+        queryParams.isNotEmpty
+            ? '${ApiConst.getFamilies}?$queryParams'
+            : ApiConst.getFamilies;
+
+    VPSDio.get(path: url)
         .then((value) {
           if (value.statusCode == 200) {
             familyModel = FamilyResponse.fromJson(value.data);
             emit(GetFamiliesSuccess());
           } else {
-            emit(GetFamiliesError(message: value.data['message'] ?? 'error'));
+            emit(GetFamiliesError(message: value.data['message'] ?? 'Error'));
           }
         })
         .catchError((e) {

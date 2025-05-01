@@ -12,13 +12,13 @@ class FamilyCardList extends StatelessWidget {
       return Center(
         child: Text(
           "No families found.",
-          style: TextStyle(fontSize: 16, color: Colors.grey),
+          style: TextStyle(fontSize: 16, color: Colors.grey[600]),
         ),
       );
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(12),
       itemCount: families!.length,
       itemBuilder: (context, index) {
         final family = families![index];
@@ -26,33 +26,38 @@ class FamilyCardList extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          elevation: 6,
-          margin: const EdgeInsets.symmetric(vertical: 8),
+          elevation: 4,
+          margin: const EdgeInsets.symmetric(vertical: 10),
           child: Padding(
-            padding: const EdgeInsets.all(18),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "${family.firstName ?? ''} ${family.lastName ?? ''}",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 _infoRow("📞 Phone", family.phone),
                 _infoRow("🏠 Address", family.address),
                 _infoRow("👨‍👩‍👧 Family Size", family.familySize?.toString()),
-                const SizedBox(height: 10),
+                const SizedBox(height: 12),
                 Align(
                   alignment: Alignment.centerRight,
                   child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                      foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                     onPressed: () => _showFamilyDetails(context, family),
-                    icon: Icon(Icons.info_outline),
-                    label: Text("See more"),
+                    icon: const Icon(Icons.info_outline),
+                    label: const Text("See more"),
                   ),
                 ),
               ],
@@ -65,17 +70,18 @@ class FamilyCardList extends StatelessWidget {
 
   Widget _infoRow(String label, String? value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.only(bottom: 6),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "$label: ",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
           ),
           Expanded(
             child: Text(
-              value ?? "N/A",
-              style: TextStyle(fontSize: 14, color: Colors.black87),
+              value?.trim().isNotEmpty == true ? value! : "N/A",
+              style: const TextStyle(fontSize: 14, color: Colors.black87),
             ),
           ),
         ],
@@ -88,9 +94,12 @@ class FamilyCardList extends StatelessWidget {
       context: context,
       builder:
           (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             title: Text(
               "${family.firstName ?? ''} ${family.lastName ?? ''}",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             content: SingleChildScrollView(
               child: Column(
@@ -114,7 +123,9 @@ class FamilyCardList extends StatelessWidget {
                   ),
                   _infoRow(
                     "Family Income",
-                    "${family.familyIncome ?? 'N/A'} DZD",
+                    family.familyIncome != null
+                        ? "${family.familyIncome} DZD"
+                        : null,
                   ),
                   _infoRow("Work Situation", family.workSituation),
                   _infoRow("Residence", family.residenceType),
@@ -128,18 +139,30 @@ class FamilyCardList extends StatelessWidget {
                   if (family.children != null &&
                       family.children!.isNotEmpty) ...[
                     const SizedBox(height: 10),
-                    Text(
+                    const Divider(thickness: 1.2),
+                    const Text(
                       "Children",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
+                    const SizedBox(height: 6),
                     ...family.children!.map(
                       (child) => Padding(
                         padding: const EdgeInsets.symmetric(vertical: 2),
-                        child: Text(
-                          "- Age: ${child.age}, Shoe Size: ${child.shoeSize}",
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.child_care,
+                              size: 18,
+                              color: Colors.blueAccent,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              "Age: ${child.age}, Shoe Size: ${child.shoeSize}",
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -150,7 +173,7 @@ class FamilyCardList extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text("Close", style: TextStyle(color: Colors.red)),
+                child: const Text("Close", style: TextStyle(color: Colors.red)),
               ),
             ],
           ),

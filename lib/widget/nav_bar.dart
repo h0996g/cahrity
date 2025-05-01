@@ -55,8 +55,8 @@ class ButtonNavBar extends StatelessWidget {
 
               /// Profile
               SalomonBottomBarItem(
-                icon: const Icon(Icons.history, size: 24),
-                title: Text('History', style: const TextStyle(fontSize: 14)),
+                icon: const Icon(Icons.add, size: 24),
+                title: Text('Add', style: const TextStyle(fontSize: 14)),
                 selectedColor: primaryColor,
                 unselectedColor: Colors.grey[600],
               ),
