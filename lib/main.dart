@@ -7,6 +7,7 @@ import 'package:charity/helper/observer.dart';
 import 'package:charity/home/cubit/home_cubit.dart';
 import 'package:charity/l10n/l10n.dart';
 import 'package:charity/route.dart';
+import 'package:charity/them.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -58,9 +59,9 @@ class MyApp extends StatelessWidget {
                 GlobalCupertinoLocalizations.delegate,
               ],
               title: 'Flutter Demo',
-              // theme: AppThemes.lightTheme,
+              theme: AppThemes.lightTheme,
               themeMode: ThemeMode.light,
-              // darkTheme: AppThemes.darkTheme,
+              darkTheme: AppThemes.darkTheme,
             );
           },
         ),

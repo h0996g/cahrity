@@ -1,3 +1,4 @@
+import 'package:charity/const/colors.dart';
 import 'package:charity/home/cubit/home_cubit.dart';
 import 'package:charity/home/family.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +60,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: primaryColor,
         title: const Text("Families"),
         actions: [
           IconButton(
@@ -145,7 +147,7 @@ class _HomePageState extends State<HomePage> {
             ),
             secondChild: const SizedBox.shrink(),
           ),
-          const Divider(thickness: 1.2),
+          // const Divider(thickness: 1.2),
           Expanded(
             child: BlocConsumer<HomeCubit, HomeState>(
               listener: (context, state) {},
