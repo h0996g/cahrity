@@ -1,20 +1,9 @@
-import 'package:charity/home/cubit/home_cubit.dart';
+import 'package:charity/Screen/Families/cubit/family_cubit.dart';
+import 'package:charity/widget/enum.dart';
 import 'package:flutter/material.dart';
 import 'package:charity/Screen/Login/componants/components.dart';
 import 'package:charity/const/colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-enum Sex { male, female }
-
-enum FamilySituation { married, single, divorced, widowed }
-
-enum WorkSituation { employed, unemployed, retired, withoutJob }
-
-enum ResidenceType { owned, rented, fragile, homeless }
-
-extension LabelExtension on Enum {
-  String get label => name[0].toUpperCase() + name.substring(1);
-}
 
 class AddFamilyPage extends StatefulWidget {
   const AddFamilyPage({super.key});
@@ -108,7 +97,7 @@ class _AddFamilyPageState extends State<AddFamilyPage> {
               const SizedBox(height: 20),
               _buildChildrenSection(),
               const SizedBox(height: 24),
-              BlocConsumer<HomeCubit, HomeState>(
+              BlocConsumer<FamilyCubit, FamilyState>(
                 listener: (context, state) {},
                 builder: (context, state) {
                   return CustomSubmitButton(
@@ -289,7 +278,7 @@ class _AddFamilyPageState extends State<AddFamilyPage> {
         "children": children,
       };
 
-      HomeCubit.get(context).addFamily(newFamily);
+      FamilyCubit.get(context).addFamily(newFamily);
 
       debugPrint("Submitted Family: $newFamily");
 

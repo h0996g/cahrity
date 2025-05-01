@@ -1,5 +1,5 @@
 import 'package:charity/const/colors.dart';
-import 'package:charity/home/cubit/home_cubit.dart';
+import 'package:charity/Screen/Families/cubit/family_cubit.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,10 +14,10 @@ class ButtonNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(
+    return BlocBuilder<FamilyCubit, FamilyState>(
       buildWhen: (previous, current) => current is HomeChangeIndex,
       builder: (context, state) {
-        final selectedIndex = HomeCubit.get(context).selectBottomindex;
+        final selectedIndex = FamilyCubit.get(context).selectBottomindex;
 
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

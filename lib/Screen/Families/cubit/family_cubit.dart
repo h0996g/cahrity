@@ -5,11 +5,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
-part 'home_state.dart';
+part 'family_state.dart';
 
-class HomeCubit extends Cubit<HomeState> {
-  HomeCubit() : super(HomeInitial());
-  static HomeCubit get(context) => BlocProvider.of(context);
+class FamilyCubit extends Cubit<FamilyState> {
+  FamilyCubit() : super(HomeInitial());
+  static FamilyCubit get(context) => BlocProvider.of(context);
 
   int selectBottomindex = 0;
 

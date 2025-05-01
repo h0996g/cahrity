@@ -4,7 +4,7 @@ import 'package:charity/cubit/main_cubit.dart';
 import 'package:charity/helper/cach.dart';
 import 'package:charity/helper/environment.dart';
 import 'package:charity/helper/observer.dart';
-import 'package:charity/home/cubit/home_cubit.dart';
+import 'package:charity/Screen/Families/cubit/family_cubit.dart';
 import 'package:charity/l10n/l10n.dart';
 import 'package:charity/route.dart';
 import 'package:charity/them.dart';
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => MainCubit()..startConnectivity()),
-          BlocProvider(create: (context) => HomeCubit()..getFamilies()),
+          BlocProvider(create: (context) => FamilyCubit()..getFamilies()),
         ],
         child: BlocBuilder<MainCubit, MainState>(
           builder: (context, state) {

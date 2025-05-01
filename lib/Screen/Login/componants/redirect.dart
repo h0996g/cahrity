@@ -1,7 +1,7 @@
 import 'package:charity/api/dio.dart';
 import 'package:charity/const/const.dart';
 import 'package:charity/helper/cach.dart';
-import 'package:charity/home/cubit/home_cubit.dart';
+import 'package:charity/Screen/Families/cubit/family_cubit.dart';
 import 'package:charity/model/login/login_m.dart';
 import 'package:charity/route.dart';
 import 'package:charity/widget/toast.dart';
@@ -17,7 +17,7 @@ Future<void> handleLoginSuccess(
   CachHelper.putcache(key: useridCache, value: loginResponseModel.user?.id);
   VPSDio.updateToken(loginResponseModel.token!);
   TOKEN = loginResponseModel.token!;
-  HomeCubit.get(context).initHome();
+  FamilyCubit.get(context).initHome();
   context.go(RouteConstants.home);
   showToast(msg: loginResponseModel.message!, state: ToastStates.success);
 }

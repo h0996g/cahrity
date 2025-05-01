@@ -1,7 +1,7 @@
 import 'package:charity/Screen/profile/profile.dart';
-import 'package:charity/home/add_famely.dart';
-import 'package:charity/home/cubit/home_cubit.dart';
-import 'package:charity/home/home.dart';
+import 'package:charity/Screen/Families/add/add_famely.dart';
+import 'package:charity/Screen/Families/cubit/family_cubit.dart';
+import 'package:charity/Screen/Families/families_screen.dart';
 import 'package:charity/widget/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +11,7 @@ class StartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(
+    return BlocBuilder<FamilyCubit, FamilyState>(
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -19,7 +19,7 @@ class StartPage extends StatelessWidget {
           body: SafeArea(child: getBody(context)),
           bottomNavigationBar: ButtonNavBar(
             onTap: (index) {
-              HomeCubit.get(context).changeIndex(index);
+              FamilyCubit.get(context).changeIndex(index);
             },
           ),
         );
@@ -29,9 +29,9 @@ class StartPage extends StatelessWidget {
 }
 
 Widget getBody(context) {
-  final selectBottomindex = HomeCubit.get(context).selectBottomindex;
+  final selectBottomindex = FamilyCubit.get(context).selectBottomindex;
   if (selectBottomindex == 0) {
-    return HomePage();
+    return FamiliesScreen();
   } else if (selectBottomindex == 3) {
     return SizedBox();
   } else if (selectBottomindex == 2) {

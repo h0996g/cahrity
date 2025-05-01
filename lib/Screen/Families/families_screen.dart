@@ -1,24 +1,24 @@
 import 'package:charity/const/colors.dart';
-import 'package:charity/home/cubit/home_cubit.dart';
-import 'package:charity/home/family.dart';
+import 'package:charity/Screen/Families/cubit/family_cubit.dart';
+import 'package:charity/Screen/Families/componants/list_families.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class FamiliesScreen extends StatefulWidget {
+  const FamiliesScreen({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<FamiliesScreen> createState() => _FamiliesScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _FamiliesScreenState extends State<FamiliesScreen> {
   final TextEditingController _firstName = TextEditingController();
   final TextEditingController _lastName = TextEditingController();
   final TextEditingController _state = TextEditingController();
 
   String? _selectedSex;
   String? _selectedFamilySituation;
-  bool _showFilters = false; // 👈 NEW STATE
+  bool _showFilters = false;
 
   final List<String> sexes = ["Male", "Female"];
   final List<String> familySituations = [
@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
       'sex': _selectedSex,
       'familySituation': _selectedFamilySituation,
     };
-    context.read<HomeCubit>().getFamilies(filters: filters);
+    context.read<FamilyCubit>().getFamilies(filters: filters);
   }
 
   void _resetFilters() {
@@ -47,13 +47,13 @@ class _HomePageState extends State<HomePage> {
       _selectedSex = null;
       _selectedFamilySituation = null;
     });
-    context.read<HomeCubit>().getFamilies();
+    context.read<FamilyCubit>().getFamilies();
   }
 
   @override
   void initState() {
     super.initState();
-    context.read<HomeCubit>().getFamilies();
+    context.read<FamilyCubit>().getFamilies();
   }
 
   @override
@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> {
           ),
           // const Divider(thickness: 1.2),
           Expanded(
-            child: BlocConsumer<HomeCubit, HomeState>(
+            child: BlocConsumer<FamilyCubit, FamilyState>(
               listener: (context, state) {},
               builder: (context, state) {
                 if (state is GetFamiliesLoading) {
@@ -160,7 +160,8 @@ class _HomePageState extends State<HomePage> {
                   return const Center(child: Text("Failed to load families"));
                 }
                 return FamilyCardList(
-                  families: HomeCubit.get(context).familyModel?.families ?? [],
+                  families:
+                      FamilyCubit.get(context).familyModel?.families ?? [],
                 );
               },
             ),
